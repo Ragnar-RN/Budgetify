@@ -62,3 +62,11 @@ object EditTransactionRoute {
 object CategoryManagementRoute {
     const val route = "category_management"
 }
+
+object SmsRationaleRoute {
+    const val route = "sms_rationale"
+}
+
+object SmsSenderManagementRoute {
+    const val route = "sms_sender_management"
+}

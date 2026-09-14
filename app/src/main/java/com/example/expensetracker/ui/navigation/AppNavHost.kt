@@ -31,6 +31,9 @@ import com.example.expensetracker.ui.screens.reports.ReportsScreen
 import com.example.expensetracker.ui.screens.reports.ReportsViewModel
 import com.example.expensetracker.ui.screens.settings.SettingsScreen
 import com.example.expensetracker.ui.screens.settings.SettingsViewModel
+import com.example.expensetracker.ui.screens.smsrationale.SmsRationaleScreen
+import com.example.expensetracker.ui.screens.smssenders.SmsSenderManagementScreen
+import com.example.expensetracker.ui.screens.smssenders.SmsSenderManagementViewModel
 import com.example.expensetracker.ui.screens.transactionslist.TransactionsListScreen
 import com.example.expensetracker.ui.screens.transactionslist.TransactionsListViewModel
 
@@ -72,7 +75,9 @@ fun AppNavHost(viewModelFactory: ViewModelFactory) {
                 val viewModel: SettingsViewModel = viewModel(factory = viewModelFactory)
                 SettingsScreen(
                     viewModel = viewModel,
-                    onNavigateToCategoryManagement = { navController.navigate(CategoryManagementRoute.route) }
+                    onNavigateToCategoryManagement = { navController.navigate(CategoryManagementRoute.route) },
+                    onNavigateToSmsRationale = { navController.navigate(SmsRationaleRoute.route) },
+                    onNavigateToSmsSenderManagement = { navController.navigate(SmsSenderManagementRoute.route) }
                 )
             }
             composable(
@@ -92,6 +97,19 @@ fun AppNavHost(viewModelFactory: ViewModelFactory) {
             composable(CategoryManagementRoute.route) {
                 val viewModel: CategoryManagementViewModel = viewModel(factory = viewModelFactory)
                 CategoryManagementScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            composable(SmsRationaleRoute.route) {
+                SmsRationaleScreen(
+                    onBack = { navController.popBackStack() },
+                    onNavigateToSenderManagement = { navController.navigate(SmsSenderManagementRoute.route) }
+                )
+            }
+            composable(SmsSenderManagementRoute.route) {
+                val viewModel: SmsSenderManagementViewModel = viewModel(factory = viewModelFactory)
+                SmsSenderManagementScreen(
                     viewModel = viewModel,
                     onBack = { navController.popBackStack() }
                 )

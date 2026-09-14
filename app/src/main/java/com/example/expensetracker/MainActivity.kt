@@ -16,7 +16,8 @@ class MainActivity : ComponentActivity() {
         val container = (application as ExpenseTrackerApplication).container
         val viewModelFactory = ViewModelFactory(
             categoryRepository = container.categoryRepository,
-            transactionRepository = container.transactionRepository
+            transactionRepository = container.transactionRepository,
+            smsSenderPatternRepository = container.smsSenderPatternRepository
         )
 
         setContent {
