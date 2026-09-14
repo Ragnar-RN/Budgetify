@@ -1,6 +1,8 @@
 package com.example.expensetracker.data.repository
 
+import com.example.expensetracker.data.local.dao.CategorySpendTotal
 import com.example.expensetracker.data.local.dao.TransactionDao
+import com.example.expensetracker.data.local.dao.TrendBucketTotal
 import com.example.expensetracker.data.local.entity.Transaction
 import kotlinx.coroutines.flow.Flow
 
@@ -24,6 +26,21 @@ class TransactionRepository(private val transactionDao: TransactionDao) {
         transactionDao.getExpenseTotal(startInclusive, endInclusive)
 
     suspend fun countByCategory(categoryId: Long): Int = transactionDao.countByCategory(categoryId)
+
+    fun getCategoryExpenseTotals(startInclusive: Long, endInclusive: Long): Flow<List<CategorySpendTotal>> =
+        transactionDao.getCategoryExpenseTotals(startInclusive, endInclusive)
+
+    fun getTrendTotals(startInclusive: Long, endInclusive: Long, bucketFormat: String): Flow<List<TrendBucketTotal>> =
+        transactionDao.getTrendTotals(startInclusive, endInclusive, bucketFormat)
+
+    fun getFiltered(
+        type: String?,
+        categoryId: Long?,
+        startInclusive: Long?,
+        endInclusive: Long?,
+        keywordPattern: String?
+    ): Flow<List<Transaction>> =
+        transactionDao.getFiltered(type, categoryId, startInclusive, endInclusive, keywordPattern)
 
     suspend fun getById(id: Long): Transaction? = transactionDao.getById(id)
 

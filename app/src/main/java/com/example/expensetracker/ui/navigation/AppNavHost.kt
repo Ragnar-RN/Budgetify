@@ -27,6 +27,8 @@ import com.example.expensetracker.ui.screens.categorymanagement.CategoryManageme
 import com.example.expensetracker.ui.screens.categorymanagement.CategoryManagementViewModel
 import com.example.expensetracker.ui.screens.home.HomeScreen
 import com.example.expensetracker.ui.screens.home.HomeViewModel
+import com.example.expensetracker.ui.screens.reports.ReportsScreen
+import com.example.expensetracker.ui.screens.reports.ReportsViewModel
 import com.example.expensetracker.ui.screens.settings.SettingsScreen
 import com.example.expensetracker.ui.screens.settings.SettingsViewModel
 import com.example.expensetracker.ui.screens.transactionslist.TransactionsListScreen
@@ -61,6 +63,10 @@ fun AppNavHost(viewModelFactory: ViewModelFactory) {
                     viewModel = viewModel,
                     onTransactionClick = { id -> navController.navigate(EditTransactionRoute.createRoute(id)) }
                 )
+            }
+            composable(Screen.Reports.route) {
+                val viewModel: ReportsViewModel = viewModel(factory = viewModelFactory)
+                ReportsScreen(viewModel = viewModel)
             }
             composable(Screen.Settings.route) {
                 val viewModel: SettingsViewModel = viewModel(factory = viewModelFactory)

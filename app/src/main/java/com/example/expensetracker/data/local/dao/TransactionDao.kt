@@ -47,4 +47,54 @@ interface TransactionDao {
 
     @Query("SELECT COUNT(*) FROM transactions WHERE category_id = :categoryId")
     suspend fun countByCategory(categoryId: Long): Int
+
+    @Query(
+        """
+        SELECT category_id, SUM(amount) AS total
+        FROM transactions
+        WHERE type = 'EXPENSE' AND date BETWEEN :startInclusive AND :endInclusive
+        GROUP BY category_id
+        ORDER BY total DESC
+        """
+    )
+    fun getCategoryExpenseTotals(
+        startInclusive: Long,
+        endInclusive: Long
+    ): Flow<List<CategorySpendTotal>>
+
+    @Query(
+        """
+        SELECT strftime(:bucketFormat, date / 1000, 'unixepoch') AS bucket,
+               SUM(CASE WHEN type = 'INCOME' THEN amount ELSE 0 END) AS income,
+               SUM(CASE WHEN type = 'EXPENSE' THEN amount ELSE 0 END) AS expense
+        FROM transactions
+        WHERE date BETWEEN :startInclusive AND :endInclusive
+        GROUP BY bucket
+        ORDER BY bucket ASC
+        """
+    )
+    fun getTrendTotals(
+        startInclusive: Long,
+        endInclusive: Long,
+        bucketFormat: String
+    ): Flow<List<TrendBucketTotal>>
+
+    @Query(
+        """
+        SELECT * FROM transactions
+        WHERE (:type IS NULL OR type = :type)
+          AND (:categoryId IS NULL OR category_id = :categoryId)
+          AND (:startInclusive IS NULL OR date >= :startInclusive)
+          AND (:endInclusive IS NULL OR date <= :endInclusive)
+          AND (:keywordPattern IS NULL OR note LIKE :keywordPattern)
+        ORDER BY date DESC
+        """
+    )
+    fun getFiltered(
+        type: String?,
+        categoryId: Long?,
+        startInclusive: Long?,
+        endInclusive: Long?,
+        keywordPattern: String?
+    ): Flow<List<Transaction>>
 }

@@ -8,6 +8,7 @@ import com.example.expensetracker.data.repository.TransactionRepository
 import com.example.expensetracker.ui.screens.addtransaction.AddTransactionViewModel
 import com.example.expensetracker.ui.screens.categorymanagement.CategoryManagementViewModel
 import com.example.expensetracker.ui.screens.home.HomeViewModel
+import com.example.expensetracker.ui.screens.reports.ReportsViewModel
 import com.example.expensetracker.ui.screens.settings.SettingsViewModel
 import com.example.expensetracker.ui.screens.transactionslist.TransactionsListViewModel
 
@@ -29,6 +30,8 @@ class ViewModelFactory(
                 SettingsViewModel(categoryRepository) as T
             CategoryManagementViewModel::class.java ->
                 CategoryManagementViewModel(categoryRepository, transactionRepository) as T
+            ReportsViewModel::class.java ->
+                ReportsViewModel(transactionRepository, categoryRepository) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
     }
