@@ -7,19 +7,24 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.expensetracker.ui.ViewModelFactory
 import com.example.expensetracker.ui.screens.addtransaction.AddTransactionScreen
 import com.example.expensetracker.ui.screens.addtransaction.AddTransactionViewModel
+import com.example.expensetracker.ui.screens.categorymanagement.CategoryManagementScreen
+import com.example.expensetracker.ui.screens.categorymanagement.CategoryManagementViewModel
 import com.example.expensetracker.ui.screens.home.HomeScreen
 import com.example.expensetracker.ui.screens.home.HomeViewModel
 import com.example.expensetracker.ui.screens.settings.SettingsScreen
@@ -41,7 +46,10 @@ fun AppNavHost(viewModelFactory: ViewModelFactory) {
         ) {
             composable(Screen.Home.route) {
                 val viewModel: HomeViewModel = viewModel(factory = viewModelFactory)
-                HomeScreen(viewModel = viewModel)
+                HomeScreen(
+                    viewModel = viewModel,
+                    onTransactionClick = { id -> navController.navigate(EditTransactionRoute.createRoute(id)) }
+                )
             }
             composable(Screen.AddTransaction.route) {
                 val viewModel: AddTransactionViewModel = viewModel(factory = viewModelFactory)
@@ -49,11 +57,38 @@ fun AppNavHost(viewModelFactory: ViewModelFactory) {
             }
             composable(Screen.TransactionsList.route) {
                 val viewModel: TransactionsListViewModel = viewModel(factory = viewModelFactory)
-                TransactionsListScreen(viewModel = viewModel)
+                TransactionsListScreen(
+                    viewModel = viewModel,
+                    onTransactionClick = { id -> navController.navigate(EditTransactionRoute.createRoute(id)) }
+                )
             }
             composable(Screen.Settings.route) {
                 val viewModel: SettingsViewModel = viewModel(factory = viewModelFactory)
-                SettingsScreen(viewModel = viewModel)
+                SettingsScreen(
+                    viewModel = viewModel,
+                    onNavigateToCategoryManagement = { navController.navigate(CategoryManagementRoute.route) }
+                )
+            }
+            composable(
+                route = EditTransactionRoute.route,
+                arguments = listOf(navArgument("transactionId") { type = NavType.LongType })
+            ) { backStackEntry ->
+                val transactionId = backStackEntry.arguments?.getLong("transactionId") ?: return@composable
+                val viewModel: AddTransactionViewModel = viewModel(factory = viewModelFactory)
+                LaunchedEffect(transactionId) { viewModel.loadTransaction(transactionId) }
+                AddTransactionScreen(
+                    viewModel = viewModel,
+                    onSaved = { navController.popBackStack() },
+                    onDeleted = { navController.popBackStack() },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            composable(CategoryManagementRoute.route) {
+                val viewModel: CategoryManagementViewModel = viewModel(factory = viewModelFactory)
+                CategoryManagementScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() }
+                )
             }
         }
     }

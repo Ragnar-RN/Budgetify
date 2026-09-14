@@ -17,3 +17,14 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
         val bottomNavItems = listOf(Home, AddTransaction, TransactionsList, Settings)
     }
 }
+
+object EditTransactionRoute {
+    private const val ARG_TRANSACTION_ID = "transactionId"
+    const val route = "edit_transaction/{$ARG_TRANSACTION_ID}"
+
+    fun createRoute(transactionId: Long) = "edit_transaction/$transactionId"
+}
+
+object CategoryManagementRoute {
+    const val route = "category_management"
+}

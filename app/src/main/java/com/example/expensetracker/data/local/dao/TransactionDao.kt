@@ -32,4 +32,19 @@ interface TransactionDao {
 
     @Query("SELECT * FROM transactions WHERE date BETWEEN :startInclusive AND :endInclusive ORDER BY date DESC")
     fun getByDateRange(startInclusive: Long, endInclusive: Long): Flow<List<Transaction>>
+
+    @Query("SELECT * FROM transactions ORDER BY date DESC LIMIT :limit")
+    fun getRecent(limit: Int): Flow<List<Transaction>>
+
+    @Query("SELECT COALESCE(SUM(CASE WHEN type = 'INCOME' THEN amount ELSE -amount END), 0.0) FROM transactions")
+    fun getBalance(): Flow<Double>
+
+    @Query("SELECT COALESCE(SUM(amount), 0.0) FROM transactions WHERE type = 'INCOME' AND date BETWEEN :startInclusive AND :endInclusive")
+    fun getIncomeTotal(startInclusive: Long, endInclusive: Long): Flow<Double>
+
+    @Query("SELECT COALESCE(SUM(amount), 0.0) FROM transactions WHERE type = 'EXPENSE' AND date BETWEEN :startInclusive AND :endInclusive")
+    fun getExpenseTotal(startInclusive: Long, endInclusive: Long): Flow<Double>
+
+    @Query("SELECT COUNT(*) FROM transactions WHERE category_id = :categoryId")
+    suspend fun countByCategory(categoryId: Long): Int
 }

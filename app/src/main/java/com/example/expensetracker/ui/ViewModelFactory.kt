@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.expensetracker.data.repository.CategoryRepository
 import com.example.expensetracker.data.repository.TransactionRepository
 import com.example.expensetracker.ui.screens.addtransaction.AddTransactionViewModel
+import com.example.expensetracker.ui.screens.categorymanagement.CategoryManagementViewModel
 import com.example.expensetracker.ui.screens.home.HomeViewModel
 import com.example.expensetracker.ui.screens.settings.SettingsViewModel
 import com.example.expensetracker.ui.screens.transactionslist.TransactionsListViewModel
@@ -26,6 +27,8 @@ class ViewModelFactory(
                 TransactionsListViewModel(transactionRepository, categoryRepository) as T
             SettingsViewModel::class.java ->
                 SettingsViewModel(categoryRepository) as T
+            CategoryManagementViewModel::class.java ->
+                CategoryManagementViewModel(categoryRepository, transactionRepository) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
     }
